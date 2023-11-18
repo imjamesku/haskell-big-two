@@ -1,6 +1,6 @@
 module CoreSpec (spec) where
 
-import Core (createDeck, shuffle)
+import Core (Card (Card), Combination (Pair), Rank (Ace, King, Two), Suit (Clubs, Diamonds, Hearts, Spades), TwoCards (TwoCards), compareCombinations, createDeck, shuffle)
 import Data.List (sort)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldNotBe)
 
@@ -22,3 +22,16 @@ spec = do
         shuffledDeck1 <- shuffle createDeck
         shuffledDeck2 <- shuffle createDeck
         shuffledDeck1 `shouldNotBe` shuffledDeck2
+    describe "compareCombinations" $ do
+      it "Ace should be greater than King" $ do
+        let p1 = Pair $ TwoCards (Card Ace Clubs) (Card Ace Diamonds)
+            p2 = Pair $ TwoCards (Card King Clubs) (Card King Diamonds)
+        compareCombinations p1 p2 `shouldBe` Just GT
+      it "Two should be greater than King" $ do
+        let p1 = Pair $ TwoCards (Card Two Clubs) (Card Two Diamonds)
+            p2 = Pair $ TwoCards (Card King Clubs) (Card King Diamonds)
+        compareCombinations p1 p2 `shouldBe` Just GT
+      it "Spades should be greater than Hearts" $ do
+        let p1 = Pair $ TwoCards (Card King Clubs) (Card King Hearts)
+            p2 = Pair $ TwoCards (Card King Diamonds) (Card King Spades)
+        compareCombinations p1 p2 `shouldBe` Just LT

@@ -1,4 +1,4 @@
-module Core (createDeck, shuffle, compareCombinations, deal) where
+module Core (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..)) where
 
 import Control.Monad
 import Data.Array.IO
@@ -7,7 +7,7 @@ import qualified Data.Map.Strict as Map
 import Data.Ord (comparing)
 import System.Random
 
-data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King deriving (Eq, Ord, Enum, Show)
+data Rank = Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King | Ace | Two deriving (Eq, Ord, Enum, Show)
 
 data Suit = Clubs | Diamonds | Hearts | Spades deriving (Eq, Ord, Enum, Show)
 
@@ -21,12 +21,10 @@ type Deck = [Card]
 
 type Hand = [Card]
 
-type Trick = [Card]
-
 data Combination = Pair TwoCards | Straight FiveCards | FullHouse FiveCards | FourOfAKind FiveCards | StraightFlush FiveCards deriving (Eq, Show)
 
 createDeck :: Deck
-createDeck = [Card r s | r <- [Ace .. King], s <- [Clubs .. Spades]]
+createDeck = [Card r s | r <- [Three .. Two], s <- [Clubs .. Spades]]
 
 -- | Randomly shuffle a list
 --   /O(N)/
@@ -55,8 +53,8 @@ deal deck =
 compareCombinations :: Combination -> Combination -> Maybe Ordering
 compareCombinations comb1 comb2 = case (comb1, comb2) of
   (Pair t1, Pair t2) -> Just $ comparePair t1 t2
-  (Straight f1, Straight f2) -> Just $ compareStraight f1 f2
-  (FullHouse f1, FullHouse f2) -> Just $ compareFullHouse f1 f2
+  -- (Straight f1, Straight f2) -> Just $ compareStraight f1 f2
+  -- (FullHouse f1, FullHouse f2) -> Just $ compareFullHouse f1 f2
   --   (FourOfAKind _, FourOfAKind _) -> compareFourOfAKind comb1 comb2
   --   (StraightFlush _, StraightFlush _) -> compareStraightFlush comb1 comb2
   _ -> Nothing
