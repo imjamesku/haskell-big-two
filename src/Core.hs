@@ -1,8 +1,10 @@
-module Core (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..)) where
+module Core (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination) where
 
 import Control.Monad
 import Data.Array.IO
-import Data.List (foldl', maximumBy)
+import Data.Function (on)
+import Data.List (foldl', groupBy, maximumBy, sort)
+import Data.List.NonEmpty (group)
 import qualified Data.Map.Strict as Map
 import Data.Ord (comparing)
 import System.Random
@@ -21,7 +23,7 @@ type Deck = [Card]
 
 type Hand = [Card]
 
-data Combination = Pair TwoCards | Straight FiveCards | FullHouse FiveCards | FourOfAKind FiveCards | StraightFlush FiveCards deriving (Eq, Show)
+data Combination = Single Card | Pair TwoCards | Straight FiveCards | FullHouse FiveCards | FourOfAKind FiveCards | StraightFlush FiveCards deriving (Eq, Show)
 
 createDeck :: Deck
 createDeck = [Card r s | r <- [Three .. Two], s <- [Clubs .. Spades]]
@@ -52,6 +54,7 @@ deal deck =
 
 compareCombinations :: Combination -> Combination -> Maybe Ordering
 compareCombinations comb1 comb2 = case (comb1, comb2) of
+  (Single c1, Single c2) -> Just $ Prelude.compare c1 c2
   (Pair t1, Pair t2) -> Just $ comparePair t1 t2
   (Straight f1, Straight f2) -> Just $ compareStraight f1 f2
   (FullHouse f1, FullHouse f2) -> Just $ compareFullHouse f1 f2
@@ -74,3 +77,46 @@ compareFullHouse f1 f2 = Prelude.compare (findRank f1) (findRank f2)
     updateMap m x = Map.insertWith (+) x 1 m
     findMaxKey :: (Ord v) => Map.Map k v -> k
     findMaxKey = fst . maximumBy (comparing snd) . Map.toList
+
+createCombination :: Hand -> Maybe Combination
+createCombination [card] = Just $ Single card
+createCombination hand
+  | isPair hand = Just $ Pair $ TwoCards (head hand) (last hand)
+  | isStraightHand hand = Just $ Straight $ FiveCards (head hand) (hand !! 1) (hand !! 2) (hand !! 3) (last hand)
+  | isFullHouse hand = Just $ FullHouse $ FiveCards (head hand) (hand !! 1) (hand !! 2) (hand !! 3) (last hand)
+  | otherwise = Nothing
+
+isPair :: Hand -> Bool
+isPair hand = length hand == 2 && (rank . head $ hand) == (rank . last $ hand)
+
+rankValue :: Rank -> [Int]
+rankValue Ace = [1, 14]
+rankValue r = [fromEnum r + 2] -- Two starts at 2, Three is 3, etc.
+
+isStraight :: [Card] -> Bool
+isStraight hand
+  | length (group sortedValues) == 5 = isConsecutive sortedValues
+  | otherwise = False
+  where
+    sortedValues = sort $ concatMap (rankValue . rank) hand
+
+isLowAceStraight :: [Card] -> Bool
+isLowAceStraight hand = sort ranks == [Two, Three, Four, Five, Ace]
+  where
+    ranks = map rank hand
+
+isStraightHand :: [Card] -> Bool
+isStraightHand hand = isStraight hand || isLowAceStraight hand
+
+isConsecutive :: [Int] -> Bool
+isConsecutive [] = True
+isConsecutive [_] = True
+isConsecutive (x : y : xs) = y == x + 1 && isConsecutive (y : xs)
+
+isFullHouse :: [Card] -> Bool
+isFullHouse hand =
+  let rankGroups = groupBy ((==) `on` rank) $ sort hand
+   in case map length rankGroups of
+        [2, 3] -> True
+        [3, 2] -> True
+        _ -> False
