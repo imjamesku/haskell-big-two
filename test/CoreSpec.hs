@@ -1,6 +1,6 @@
 module CoreSpec (spec) where
 
-import Core (Card (Card), Combination (FullHouse, Pair), FiveCards (FiveCards), Rank (Ace, King, Two), Suit (Clubs, Diamonds, Hearts, Spades), TwoCards (TwoCards), compareCombinations, createDeck, shuffle)
+import BigTwoCore (Card (Card), Combination (FullHouse, Pair), FiveCards (FiveCards), Rank (Ace, King, Two), Suit (Clubs, Diamonds, Hearts, Spades), TwoCards (TwoCards), compareCombinations, createDeck, shuffle)
 import Data.List (sort)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldNotBe)
 

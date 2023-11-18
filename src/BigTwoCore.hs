@@ -1,4 +1,4 @@
-module Core (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination) where
+module BigTwoCore (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination, Hand, Deck, selectFromHand) where
 
 import Control.Monad
 import Data.Array.IO
@@ -22,6 +22,8 @@ data TwoCards = TwoCards Card Card deriving (Eq, Show, Ord)
 type Deck = [Card]
 
 type Hand = [Card]
+
+type SelectedCards = [Card]
 
 data Combination = Single Card | Pair TwoCards | Straight FiveCards | FullHouse FiveCards | FourOfAKind FiveCards | StraightFlush FiveCards deriving (Eq, Show)
 
@@ -120,3 +122,9 @@ isFullHouse hand =
         [2, 3] -> True
         [3, 2] -> True
         _ -> False
+
+selectFromHand :: [Int] -> Hand -> (SelectedCards, Hand)
+selectFromHand indices hand = (selectedCards, remainingCards)
+  where
+    selectedCards = map (hand !!) indices
+    remainingCards = filter (`notElem` selectedCards) hand

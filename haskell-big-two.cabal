@@ -59,7 +59,7 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  Core
+    exposed-modules:  BigTwoCore
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -82,7 +82,7 @@ library
 
 executable haskell-big-two
     -- Import common warning flags.
-    import:           warnings
+    import:           warnings,
 
     -- .hs or .lhs file containing the Main module.
     main-is:          Main.hs
