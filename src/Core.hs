@@ -8,7 +8,7 @@ data Rank = Ace | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten |
 
 data Suit = Clubs | Diamonds | Hearts | Spades deriving (Eq, Ord, Enum, Show)
 
-data Card = Card {rank :: Rank, suit :: Suit} deriving (Eq, Show)
+data Card = Card {rank :: Rank, suit :: Suit} deriving (Eq, Show, Ord)
 
 type Deck = [Card]
 
