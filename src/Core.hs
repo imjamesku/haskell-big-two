@@ -53,8 +53,8 @@ deal deck =
 compareCombinations :: Combination -> Combination -> Maybe Ordering
 compareCombinations comb1 comb2 = case (comb1, comb2) of
   (Pair t1, Pair t2) -> Just $ comparePair t1 t2
-  -- (Straight f1, Straight f2) -> Just $ compareStraight f1 f2
-  -- (FullHouse f1, FullHouse f2) -> Just $ compareFullHouse f1 f2
+  (Straight f1, Straight f2) -> Just $ compareStraight f1 f2
+  (FullHouse f1, FullHouse f2) -> Just $ compareFullHouse f1 f2
   --   (FourOfAKind _, FourOfAKind _) -> compareFourOfAKind comb1 comb2
   --   (StraightFlush _, StraightFlush _) -> compareStraightFlush comb1 comb2
   _ -> Nothing
