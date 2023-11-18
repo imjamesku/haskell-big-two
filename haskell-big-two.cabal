@@ -72,6 +72,7 @@ library
         , base ^>=4.16.4.0
         , random ^>= 1.2.1.1
         , array ^>= 0.5.4.0
+        , containers
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -95,7 +96,7 @@ executable haskell-big-two
     -- Other library packages from which modules are imported.
     build-depends:
         base ^>=4.16.4.0,
-        haskell-big-two
+        haskell-big-two,
 
     -- Directories containing source files.
     hs-source-dirs:   app
