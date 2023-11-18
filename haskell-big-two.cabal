@@ -59,7 +59,7 @@ library
     import:           warnings
 
     -- Modules exported by the library.
-    exposed-modules:  MyLib
+    exposed-modules:  Core
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -68,7 +68,10 @@ library
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.16.4.0
+    build-depends:
+        , base ^>=4.16.4.0
+        , random ^>= 1.2.1.1
+        , array ^>= 0.5.4.0
 
     -- Directories containing source files.
     hs-source-dirs:   src
@@ -125,4 +128,8 @@ test-suite haskell-big-two-test
     -- Test dependencies.
     build-depends:
         base ^>=4.16.4.0,
-        haskell-big-two
+        haskell-big-two,
+        hspec,
+        hspec-discover
+    ghc-options:        -O -threaded -rtsopts -with-rtsopts=-N
+    build-tool-depends: hspec-discover:hspec-discover
