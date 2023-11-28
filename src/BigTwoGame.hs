@@ -3,7 +3,6 @@ module BigTwoGame (nextGameState, PlayerAction (..), GameState (..), UpdateGameS
 import BigTwoCore (Hand, compareCombinations, createCombination, removeHand)
 import Util (updateListAt)
 
--- import BigTwoCore ()
 data GameState = GameState {hands :: [Hand], lastHand :: Maybe Hand, turn :: Int, passCount :: Int} deriving (Eq, Show)
 
 data UpdateGameStateResult = UpdateGameStateResult {newGameState :: GameState, message :: String} deriving (Eq, Show)
