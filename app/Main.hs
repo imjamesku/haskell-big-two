@@ -33,6 +33,10 @@ generateIndicesString hand =
   let middle = intercalate "," $ idxToStr hand <$> [0 .. length hand - 1]
    in "[" ++ middle ++ "]"
 
+-- TODO: check if input is valid
+isInputValid :: String -> Bool
+isInputValid s = True
+
 updateGameState :: GameState -> IO GameState
 updateGameState state = do
   let currentPlayerHand = hands state !! turn state
@@ -41,18 +45,40 @@ updateGameState state = do
   -- TODO: sort hand
   putStrLn $ "Your hand: " ++ show currentPlayerHand
   putStrLn $ "indices  : " ++ generateIndicesString currentPlayerHand
-  putStrLn "Please select a combination to play(indices separated by space)"
+  putStrLn "Please select a combination to play(indices separated by space). p to pass."
   input <- getLine
-  putStrLn $ "You entered: " ++ input
-  let indices = stringToIndices input
-  let (selected, remaining) = selectFromHand indices currentPlayerHand
-  putStrLn $ "Selected: " ++ show selected
-  putStrLn $ "Remaining: " ++ show remaining
+  if not $ isInputValid input
+    then do
+      putStrLn "Invalid input"
+      return state
+    else handlePlayerInput input state
+
+handlePlayerInput :: String -> GameState -> IO GameState
+handlePlayerInput input state = do
+  let currentPlayerHand = hands state !! turn state
+  if input == "p"
+    then do
+      putStrLn "Pass"
+      let newPassCount = passCount state + 1
+      if newPassCount == 3
+        then do
+          putStrLn "Resetting last hand"
+          return GameState {hands = hands state, lastHand = Nothing, turn = (turn state + 1) `mod` 4, passCount = 0}
+        else return state {turn = (turn state + 1) `mod` 4, passCount = newPassCount}
+    else do
+      let indices = stringToIndices input
+      let (selected, remaining) = selectFromHand indices currentPlayerHand
+      putStrLn $ "Selected: " ++ show selected
+      putStrLn $ "Remaining: " ++ show remaining
+      handlePlay selected remaining state
+
+handlePlay :: Hand -> Hand -> GameState -> IO GameState
+handlePlay selected remaining state = do
   let combination = createCombination selected
   case (combination, lastHand state) of
     (Nothing, _) -> do
       putStrLn "Invalid combination\n"
-      updateGameState state
+      return state
     (_, Nothing) ->
       let newHands = updateListAt (turn state) remaining (hands state)
        in return GameState {hands = newHands, lastHand = Just selected, turn = (turn state + 1) `mod` 4, passCount = 0}
@@ -65,16 +91,16 @@ updateGameState state = do
           case comparison of
             Nothing -> do
               putStrLn "Invalid combination\n"
-              updateGameState state
+              return state
             Just GT -> do
               let newHands = updateListAt (turn state) remaining (hands state)
               return GameState {hands = newHands, lastHand = Just selected, turn = (turn state + 1) `mod` 4, passCount = 0}
             Just LT -> do
               putStrLn "Invalid combination\n"
-              updateGameState state
+              return state
             Just EQ -> do
               putStrLn "Invalid combination\n"
-              updateGameState state
+              return state
 
 gameLoop :: GameState -> IO ()
 gameLoop state = do
