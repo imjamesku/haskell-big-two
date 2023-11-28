@@ -1,4 +1,4 @@
-module BigTwoCore (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination, Hand, Deck, selectFromHand, sortHand) where
+module BigTwoCore (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination, Hand, Deck, selectFromHand, sortHand, removeHand) where
 
 import Control.Monad
 import Data.Array.IO
@@ -134,6 +134,9 @@ selectFromHand indices hand = (selectedCards, remainingCards)
   where
     selectedCards = map (hand !!) indices
     remainingCards = filter (`notElem` selectedCards) hand
+
+removeHand :: Hand -> Hand -> Hand
+removeHand handToRemove hand = filter (`notElem` handToRemove) hand
 
 rankToString :: Rank -> String
 rankToString rank = case rank of
