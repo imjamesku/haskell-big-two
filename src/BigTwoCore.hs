@@ -1,4 +1,4 @@
-module BigTwoCore (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination, Hand, Deck, selectFromHand) where
+module BigTwoCore (createDeck, shuffle, compareCombinations, deal, TwoCards (..), Combination (..), FiveCards (..), Card (..), Rank (..), Suit (..), isStraightHand, isFullHouse, createCombination, Hand, Deck, selectFromHand, sortHand) where
 
 import Control.Monad
 import Data.Array.IO
@@ -48,6 +48,9 @@ shuffle xs = do
     n = length xs
     newArray :: Int -> [a] -> IO (IOArray Int a)
     newArray n xs = newListArray (1, n) xs
+
+sortHand :: Hand -> Hand
+sortHand = sort
 
 deal :: Deck -> [Hand]
 deal deck =

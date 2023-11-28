@@ -1,6 +1,6 @@
 module CoreSpec (spec) where
 
-import BigTwoCore (Card (Card), Combination (FullHouse, Pair), FiveCards (FiveCards), Rank (Ace, King, Two), Suit (Clubs, Diamonds, Hearts, Spades), TwoCards (TwoCards), compareCombinations, createDeck, shuffle)
+import BigTwoCore (Card (Card), Combination (FullHouse, Pair), FiveCards (FiveCards), Rank (Ace, Five, Four, King, Six, Three, Two), Suit (Clubs, Diamonds, Hearts, Spades), TwoCards (TwoCards), compareCombinations, createDeck, shuffle, sortHand)
 import Data.List (sort)
 import Test.Hspec (Spec, describe, it, shouldBe, shouldNotBe)
 
@@ -41,3 +41,9 @@ spec = do
           let p1 = FullHouse $ FiveCards (Card Ace Clubs) (Card Ace Diamonds) (Card Ace Hearts) (Card King Clubs) (Card King Diamonds)
               p2 = FullHouse $ FiveCards (Card King Clubs) (Card King Diamonds) (Card King Hearts) (Card Two Clubs) (Card Two Diamonds)
           compareCombinations p1 p2 `shouldBe` Just GT
+    describe "sortHand" $ do
+      describe "sort hands" $ do
+        it "should sort hands" $ do
+          let hand = [Card Ace Clubs, Card King Clubs, Card Two Clubs, Card Two Diamonds, Card Three Hearts, Card Four Spades, Card Five Clubs, Card Six Diamonds]
+          let sortedHand = [Card Three Hearts, Card Four Spades, Card Five Clubs, Card Six Diamonds, Card King Clubs, Card Ace Clubs, Card Two Clubs, Card Two Diamonds]
+          sort hand `shouldBe` sortedHand
