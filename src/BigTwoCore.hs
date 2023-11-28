@@ -13,7 +13,10 @@ data Rank = Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Quee
 
 data Suit = Clubs | Diamonds | Hearts | Spades deriving (Eq, Ord, Enum, Show)
 
-data Card = Card {rank :: Rank, suit :: Suit} deriving (Eq, Show, Ord)
+data Card = Card {rank :: Rank, suit :: Suit} deriving (Eq, Ord)
+
+instance Show Card where
+  show (Card r s) = suitToChar s : rankToString r
 
 data FiveCards = FiveCards Card Card Card Card Card deriving (Eq, Show, Ord)
 
@@ -128,3 +131,26 @@ selectFromHand indices hand = (selectedCards, remainingCards)
   where
     selectedCards = map (hand !!) indices
     remainingCards = filter (`notElem` selectedCards) hand
+
+rankToString :: Rank -> String
+rankToString rank = case rank of
+  Three -> "3"
+  Four -> "4"
+  Five -> "5"
+  Six -> "6"
+  Seven -> "7"
+  Eight -> "8"
+  Nine -> "9"
+  Ten -> "10"
+  Jack -> "J"
+  Queen -> "Q"
+  King -> "K"
+  Ace -> "A"
+  Two -> "2"
+
+suitToChar :: Suit -> Char
+suitToChar suit = case suit of
+  Clubs -> '♣'
+  Diamonds -> '◆'
+  Hearts -> '♥'
+  Spades -> '♠'

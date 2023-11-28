@@ -13,6 +13,7 @@ initState = do
 updateGameState :: GameState -> IO GameState
 updateGameState state = do
   putStrLn $ "Player " ++ show (turn state) ++ "'s turn"
+  putStrLn $ "Your hand: " ++ show (hands state !! turn state)
   input <- getLine
   error "Not implemented"
 
