@@ -2,6 +2,7 @@ module Main where
 
 import BigTwoCore (Hand, compareCombinations, createCombination, createDeck, deal, selectFromHand, shuffle, sortHand)
 import Data.List (intercalate)
+import Util (updateListAt)
 
 data GameState = GameState {hands :: [Hand], lastHand :: Maybe Hand, turn :: Int, passCount :: Int} deriving (Eq, Show)
 
@@ -17,11 +18,6 @@ showLastHand (Just hand) = show hand
 
 stringToIndices :: String -> [Int]
 stringToIndices = map read . words
-
-updateListAt :: Int -> a -> [a] -> [a]
-updateListAt idx newVal list
-  | idx < 0 || idx >= length list = error "Index out of bounds"
-  | otherwise = take idx list ++ [newVal] ++ drop (idx + 1) list
 
 padRight :: Int -> String -> String
 padRight len str = str ++ replicate (len - length str) ' '
